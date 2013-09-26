@@ -13,11 +13,10 @@ Usage
 
 NOT WORKING CURRENTLY - WORK IN PROGRESS!
 
-	>>> import homegate.Homegate as Homegate
+	>>> from homegate.Homegate import Homegate, IdxRecord
 	>>> hg = Homegate(MY_AGANCY_ID)
-	
-	>>> rec = hg.
-	>>> hg.push()
+	>>> rec = IdxRecord()
+	>>> hg.push(rec)
 
 
 
@@ -41,4 +40,4 @@ Changelog
 0.0.1
 -----
 
-Initial working version of python-homegate. 
+arteria GmbH open sourced the initial working version of python-homegate allowing to push real estate objects and property to Homegate using the IDX3.01 API.

@@ -1,3 +1,8 @@
+import ftplib
+import tempfile
+
+from __init__ import __version__
+
 
 FTP_ENDPOINT = 'ftp.homegate.ch'
 DATA_DIR = '/data'
@@ -7,13 +12,63 @@ DOC_DIR = '/doc'
 
 
 class Homegate(object):
-    
-    def __init__(self, agancyID):
+    ''' 
+    This implements the IDX3.01 API for Homegate. 
+    The full documentation can be found here: https://github.com/arteria/python-homegate/
+    '''
+    _images = ["picture_"+str(x+1)+"_filename" for x in range(13)]
+            
+    def __init__(self, agancyID, username=None, password=None):
+        ''' 
+        Establish connection to Homegate's FTP server.
+        '''
         self.agancyID = agancyID
+        self.session = ftplib.FTP("{host}/{agancyID}".format(host=FTP_ENDPOINT, agancyID=agancyID), username, password)
     
-    class Record(object):
+    def push(self, idxRecord):
+        ''' 
+        Transmit (push, upload) this record and it's file to Homegate.
+        '''
+        idxRecord.update({'agency_id': self.agancyID, 'last_modified': })
+        
+        
+        for field in fields:
+            # upload images
+            if field[0] in self._images and field[1] != '':
+                f = open(field[1], 'rb')
+                fname = field[1] #basname
+                #TODO: update field - overwrite with basename
+                self.session.storbinary('STOR {images}/{fname}'.format(images=IMAGES_DIR, fname=fname), f) 
+                f.close()
+        
+            # upload movies
+            elif field[0] == 'movie_filename' and field[1] != '':
+                pass
+            # upload docs
+            elif field[0] == 'document_filename' and field[1] != '':
+                pass
+        
+        # write idx file
+        f = tempfile.NamedTemporaryFile(delete=True)
+        for field in fields:
+            f.wrtie("{field1}#".format(field1=field[1])
+            
+        # upload idx file
+        f.seek(0)
+        self.session.storbinary('STOR todo.jpg', f) 
+        # remove tmp file
+        f.close()
+        
     
-        self._fields = [
+    def __del__(self):
+        ''' 
+        Clean up and close. 
+        '''
+        self.session.quit()    
+    
+class IdxRecord(object):
+    def __init__(self):
+        self.fields = [
                 ['version', 'IDX3.01'],
                 ['sender_id', 'python-homegate-'+__version__],
                 ['object_category', ''],
@@ -198,16 +253,18 @@ class Homegate(object):
                 ['sparefield_3', ''],
                 ['sparefield_4', ''],
         ]
+    
+    def update(obj):
+        '''
+        The argument 'obj' should be dictionary containing the new values to overwrites 'self._fields' partially.
         
-        def update(obj):
-            '''
-            The argument 'obj' should be dictionary containing the new values to overwrites 'self._fields' partially.
-            Example: Set city to 'Basel' and country to Switzerland, the result '(2, 0)' says that two fields were updated successfully and no errors. 
-                
-                >>> rec.update({'object_city':'Basel', 'object_country':'CH'}) 
-                (2, 0)
-                >>>
-                
-            '''
-            updates, errors = 0, 0
-            return updates, errors
+        Example: Set city to 'Basel' and country to Switzerland, the result '(2, 0)' says that two fields were 
+        updated successfully and no errors. 
+            
+            >>> rec.update({'object_city':'Basel', 'object_country':'CH'}) 
+            (2, 0)
+            >>>
+            
+        '''
+        updates, errors = 0, 0
+        return updates, errors
