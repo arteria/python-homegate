@@ -43,9 +43,14 @@ class Homegate(object):
         
             # upload movies
             elif field[0] == 'movie_filename' and field[1] != '':
+                #TODO: update field - overwrite with basename
+                #TODO: upload movie
                 pass
+                
             # upload docs
             elif field[0] == 'document_filename' and field[1] != '':
+                #TODO: update field - overwrite with basename
+                #TODO: upload doc
                 pass
         
         # write idx file
@@ -267,4 +272,5 @@ class IdxRecord(object):
             
         '''
         updates, errors = 0, 0
+        #TODO: update fields as requested...
         return updates, errors
