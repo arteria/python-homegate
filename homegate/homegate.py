@@ -32,7 +32,7 @@ class Homegate(object):
         ''' 
         Transfer (push, upload) this record and it's file to Homegate.
         '''
-        last_modified = datetime.datetime.now().strftime("%d.%m.%y")
+        last_modified = datetime.datetime.now().strftime("%d.%m.%Y")
         idxRecord.update({'agency_id': self.agancyID, 'last_modified': last_modified})
         
         for field in idxRecord.fields:
