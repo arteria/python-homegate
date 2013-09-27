@@ -7,7 +7,7 @@ setup(
     version=__version__,
     packages=['homegate', ],
     license='BSD',
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
     author='arteria GmbH',
     author_email='admin@arteria.ch',
 )
