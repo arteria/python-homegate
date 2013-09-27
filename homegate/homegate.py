@@ -1,11 +1,12 @@
 import ftplib
 import tempfile
 import datetime
+import os
 
 from __init__ import __version__
 
 
-FTP_ENDPOINT = 'ftp.homegate.ch'
+FTP_HOST = 'ftp.homegate.ch'
 DATA_DIR = '/data'
 IMAGES_DIR = '/images' 
 MOVIES_DIR = '/movies'
@@ -19,66 +20,73 @@ class Homegate(object):
     '''
     _images = ["picture_"+str(x+1)+"_filename" for x in range(13)]
             
-    def __init__(self, agancyID, username=None, password=None):
+    def __init__(self, agancyID, host=FTP_HOST, username=None, password=None):
         ''' 
         Establish connection to Homegate's FTP server.
         '''
+        print host, username, password
         self.agancyID = agancyID
-        self.session = ftplib.FTP("{host}/{agancyID}".format(host=FTP_ENDPOINT, agancyID=agancyID), username, password)
-    
+        self.session = ftplib.FTP(host, username, password)
+        
     def push(self, idxRecord):
         ''' 
-        Transmit (push, upload) this record and it's file to Homegate.
+        Transfer (push, upload) this record and it's file to Homegate.
         '''
         last_modified = datetime.datetime.now().strftime("%d.%m.%y")
         idxRecord.update({'agency_id': self.agancyID, 'last_modified': last_modified})
         
-        
-        for field in fields:
+        for field in idxRecord.fields:
             if field[0] in self._images and field[1] != '':
                 # upload images
-                self.session.cwd(MOVIES_DIR)
                 f = open(field[1], 'rb')
-                fname = field[1] #basname
-                #TODO: update field - overwrite with basename
+                fname = os.path.basename(field[1])
+                self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=IMAGES_DIR))
                 self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
                 f.close()
+                # Modify field - set filename.ext instead of full path after uploading.
+                idxRecord.update({field[0]: fname})
         
             elif field[0] == 'movie_filename' and field[1] != '':
                 # upload movies
-                self.session.cwd(IMAGES_DIR)
-                #TODO: update field - overwrite with basename
-                #TODO: upload movie
-                pass
+                f = open(field[1], 'rb')
+                fname = os.path.basename(field[1])
+                self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=MOVIES_DIR))
+                self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
+                f.close()
+                # Modify field - set filename.ext instead of full path after uploading.
+                idxRecord.update({field[0]: fname})
                 
             # upload docs
             elif field[0] == 'document_filename' and field[1] != '':
                 # upload movies
-                self.session.cwd(DOC_DIR)
-                #TODO: update field - overwrite with basename
-                #TODO: upload doc
-                pass
-        
+                f = open(field[1], 'rb')
+                fname = os.path.basename(field[1])
+                self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DOC_DIR))
+                self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
+                f.close()
+                # Modify field - set filename.ext instead of full path after uploading.
+                idxRecord.update({field[0]: fname})
+                
         # write idx file
-        
         f = tempfile.NamedTemporaryFile(delete=True)
-        for field in fields:
+        for field in idxRecord.fields:
             f.write("{field1}#".format(field1=field[1]).encode('iso-8859-1'))
         f.write("\n")
         f.flush()
         # upload idx file
         f.seek(0)
-        self.session.cwd(DOC_DIR)
+        self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DOC_DIR))
         self.session.storlines('STOR unload.txt', f) 
         # remove tmp file
         f.close()
+        return True
         
-    
     def __del__(self):
         ''' 
         Clean up and close. 
         '''
         self.session.quit()    
+        print "good bye"
     
 class IdxRecord(object):
     def __init__(self):
@@ -268,7 +276,7 @@ class IdxRecord(object):
                 ['sparefield_4', ''],
         ]
     
-    def update(obj):
+    def update(self, obj):
         '''
         The argument 'obj' should be dictionary containing the new values to overwrites 'self._fields' partially.
         
@@ -282,10 +290,14 @@ class IdxRecord(object):
         '''
         updates, errors = 0, 0
         for o in obj:
-            for field in self.fields:
-                if o[0] == field[0]:
-                    field[1] = o[0]
+            found  = False
+            for field in self.fields: 
+                if o == field[0]:
+                    field[1] = obj[o] 
                     updates += 1
-            else:
+                    found = True
+                    break
+            if not found:
                 errors += 1 # not found 
         return updates, errors
+        

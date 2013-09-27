@@ -7,17 +7,42 @@ credentials, question regarding Homegate, etc. please contact Homegate AG direct
 
 Use the issue tracking system for all pyhton-homegate related issues, bug reports, feature request, etc. 
 
+Installation
+============
+
+If you want the latest stable version of python-homegate from PyPi, install using
+
+	#TODO
+
+Or, if you prefer to install the latest and greates commit from GitHub, install using
+
+	pip install -e git+https://github.com/arteria/python-homegate.git#egg=homegate
+
+You should know what you do by choosing the second option. ;-)
+
 
 Usage
 =====
 
 NOT WORKING CURRENTLY - WORK IN PROGRESS!
 
-	>>> from homegate.Homegate import Homegate, IdxRecord
-	>>> hg = Homegate(MY_AGANCY_ID)
-	>>> rec = IdxRecord()
-	>>> hg.push(rec)
+Connect to Homegate
 
+	>>> from homegate import Homegate, IdxRecord
+	>>> hg = Homegate(MY_AGANCY_ID)
+
+Create an empty record and set/update data
+	
+	>>> rec = IdxRecord()
+	>>> rec.update({'object_city':'Basel', 'object_country':'CH'})
+	>>> rec.update({'picture_1_filename': '/Users/phi/Desktop/country-house.jpg', 'picture_1_title': 'Country house front view'}) 
+
+Publish (push) to Homegate and disconnect
+
+	>>> hg.push(rec)
+	>>> del hg
+	good bye
+	>>>
 
 
 Contribution
