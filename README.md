@@ -44,6 +44,13 @@ Publish (push) to Homegate and disconnect
 	good bye
 	>>>
 
+Options
+-------
+
+Define a prefix for IdxRcords. This allows to have unique filenames for the FTP processing. The process is triggered 
+three times a day (at 6h00, 12h00 and 18h00).	
+
+	>>> rec = IdxRecord(prefix='1234-')
 
 Contribution
 ============
