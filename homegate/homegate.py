@@ -39,7 +39,7 @@ class Homegate(object):
             if field[0] in self._images and field[1] != '':
                 # upload images
                 f = open(field[1], 'rb')
-                fname = os.path.basename(field[1])
+                fname = idxRecord+os.path.basename(field[1])
                 self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=IMAGES_DIR))
                 self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
                 f.close()
@@ -49,7 +49,7 @@ class Homegate(object):
             elif field[0] == 'movie_filename' and field[1] != '':
                 # upload movies
                 f = open(field[1], 'rb')
-                fname = os.path.basename(field[1])
+                fname = idxRecord+os.path.basename(field[1])
                 self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=MOVIES_DIR))
                 self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
                 f.close()
@@ -60,7 +60,7 @@ class Homegate(object):
             elif field[0] == 'document_filename' and field[1] != '':
                 # upload movies
                 f = open(field[1], 'rb')
-                fname = os.path.basename(field[1])
+                fname = idxRecord+os.path.basename(field[1])
                 self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DOC_DIR))
                 self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
                 f.close()
@@ -89,7 +89,8 @@ class Homegate(object):
         print "good bye"
     
 class IdxRecord(object):
-    def __init__(self):
+    def __init__(self, prefix=''):
+        self.prefix = prefix
         self.fields = [
                 ['version', 'IDX3.01'],
                 ['sender_id', 'python-homegate-'+__version__],
