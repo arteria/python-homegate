@@ -1,5 +1,6 @@
 import ftplib
 import tempfile
+import datetime
 
 from __init__ import __version__
 
@@ -29,38 +30,46 @@ class Homegate(object):
         ''' 
         Transmit (push, upload) this record and it's file to Homegate.
         '''
-        idxRecord.update({'agency_id': self.agancyID, 'last_modified': })
+        last_modified = datetime.datetime.now().strftime("%d.%m.%y")
+        idxRecord.update({'agency_id': self.agancyID, 'last_modified': last_modified})
         
         
         for field in fields:
-            # upload images
             if field[0] in self._images and field[1] != '':
+                # upload images
+                self.session.cwd(MOVIES_DIR)
                 f = open(field[1], 'rb')
                 fname = field[1] #basname
                 #TODO: update field - overwrite with basename
-                self.session.storbinary('STOR {images}/{fname}'.format(images=IMAGES_DIR, fname=fname), f) 
+                self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
                 f.close()
         
-            # upload movies
             elif field[0] == 'movie_filename' and field[1] != '':
+                # upload movies
+                self.session.cwd(IMAGES_DIR)
                 #TODO: update field - overwrite with basename
                 #TODO: upload movie
                 pass
                 
             # upload docs
             elif field[0] == 'document_filename' and field[1] != '':
+                # upload movies
+                self.session.cwd(DOC_DIR)
                 #TODO: update field - overwrite with basename
                 #TODO: upload doc
                 pass
         
         # write idx file
+        
         f = tempfile.NamedTemporaryFile(delete=True)
         for field in fields:
-            f.wrtie("{field1}#".format(field1=field[1])
-            
+            f.write("{field1}#".format(field1=field[1]).encode('iso-8859-1'))
+        f.write("\n")
+        f.flush()
         # upload idx file
         f.seek(0)
-        self.session.storbinary('STOR todo.jpg', f) 
+        self.session.cwd(DOC_DIR)
+        self.session.storlines('STOR unload.txt', f) 
         # remove tmp file
         f.close()
         
@@ -272,5 +281,11 @@ class IdxRecord(object):
             
         '''
         updates, errors = 0, 0
-        #TODO: update fields as requested...
+        for o in obj:
+            for field in self.fields:
+                if o[0] == field[0]:
+                    field[1] = o[0]
+                    updates += 1
+            else:
+                errors += 1 # not found 
         return updates, errors
