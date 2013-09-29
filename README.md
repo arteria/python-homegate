@@ -29,7 +29,7 @@ NOT WORKING CURRENTLY - WORK IN PROGRESS!
 Connect to Homegate
 
 	>>> from homegate import Homegate, IdxRecord
-	>>> hg = Homegate(MY_AGANCY_ID)
+	>>> hg = Homegate(MY_AGANCY_ID, HOST, USERNAME, PASSWORD)
 
 Create an empty record and set/update data
 	
@@ -70,8 +70,8 @@ Contribution
 TODO
 ====
 
-- Type and length validation for each field
-- 
+* Type and length validation for each field
+* 
 
 Changelog
 =========
