@@ -29,7 +29,7 @@ NOT WORKING CURRENTLY - WORK IN PROGRESS!
 Connect to Homegate
 
 	>>> from homegate.homegate import Homegate, IdxRecord
-	>>> hg = Homegate(MY_AGANCY_ID, HOST, USERNAME, PASSWORD)
+	>>> hg = Homegate(MY_AGENCY_ID, HOST, USERNAME, PASSWORD)
 
 Create an empty record and set/update data
 	
