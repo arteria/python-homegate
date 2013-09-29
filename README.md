@@ -50,7 +50,14 @@ Options
 Define a prefix for IdxRcords. This allows to have unique filenames for the FTP processing. The process is triggered 
 three times a day (at 6h00, 12h00 and 18h00).	
 
-	>>> rec = IdxRecord(prefix='1234-')
+	>>> rec_1234 = IdxRecord(prefix='1234-')
+	
+To push multiple records at once, pass a list of records.
+
+	>>> rec_2345 = IdxRecord(prefix='2345-')
+	>>> rec_3465 = IdxRecord(prefix='3456-')
+	>>> hg.push([rec_1234, rec_2345, rec_3465])
+ 
 
 Contribution
 ============
