@@ -79,7 +79,7 @@ class Homegate(object):
                     
                 # append to idx file
                 for field in idxRecord.fields:
-                    idx_f.write("{field1}#".format(field1=field[1])
+                    idx_f.write("{field1}#".format(field1=field[1]))                
                 idx_f.write("\n\r")
                 idx_f.flush()
         
