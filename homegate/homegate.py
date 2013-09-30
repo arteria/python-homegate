@@ -2,7 +2,7 @@ import ftplib
 import tempfile
 import datetime
 import os
-
+import codecs
 from __init__ import __version__
 
 
@@ -33,60 +33,65 @@ class Homegate(object):
         ''' 
         Transfer (push, upload) this record(s) and it's file to Homegate.
         '''
-        idx_f = tempfile.NamedTemporaryFile(delete=True)
-        last_modified = datetime.datetime.now().strftime("%d.%m.%Y")
-        
-        if not isinstance(idxRecords, list):
-            idxRecords = [idxRecords, ]
-        
-        for idxRecord in idxRecords:
-            idxRecord.update({'agency_id': self.agancyID, 'last_modified': last_modified})
-        
-            for field in idxRecord.fields:
-                if field[0] in self._images and field[1] != '':
-                    # upload images
-                    f = open(field[1], 'rb')
-                    fname = idxRecord.prefix + os.path.basename(field[1])
-                    self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=IMAGES_DIR))
-                    self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
-                    f.close()
-                    # Modify field - set filename.ext instead of full path after uploading.
-                    idxRecord.update({field[0]: fname})
-        
-                elif field[0] == 'movie_filename' and field[1] != '':
-                    # upload movies
-                    f = open(field[1], 'rb')
-                    fname = idxRecord.prefix + os.path.basename(field[1])
-                    self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=MOVIES_DIR))
-                    self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
-                    f.close()
-                    # Modify field - set filename.ext instead of full path after uploading.
-                    idxRecord.update({field[0]: fname})
-                
-                # upload docs
-                elif field[0] == 'document_filename' and field[1] != '':
-                    # upload movies
-                    f = open(field[1], 'rb')
-                    fname = idxRecord.prefix + os.path.basename(field[1])
-                    self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DOC_DIR))
-                    self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
-                    f.close()
-                    # Modify field - set filename.ext instead of full path after uploading.
-                    idxRecord.update({field[0]: fname})
-                    
-            # append to idx file
-            for field in idxRecord.fields:
-                idx_f.write("{field1}#".format(field1=field[1]).encode('iso-8859-1'))
-            idx_f.write("\n\r")
-            idx_f.flush()
-        
-        # upload idx file
-        idx_f.seek(0)
-        self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DOC_DIR))
-        self.session.storlines('STOR unload.txt', idx_f) 
-        # remove tmp file
+        idx_f = tempfile.NamedTemporaryFile(delete=False)
+        idx_filename = idx_f.name
         idx_f.close()
-        return True
+        with codecs.open(idx_filename, 'w+b', encoding="ISO-8859-1") as idx_f:
+            last_modified = datetime.datetime.now().strftime("%d.%m.%Y")
+        
+            if not isinstance(idxRecords, list):
+                idxRecords = [idxRecords, ]
+        
+            for idxRecord in idxRecords:
+                idxRecord.update({'agency_id': self.agancyID, 'last_modified': last_modified})
+        
+                for field in idxRecord.fields:
+                    if field[0] in self._images and field[1] != '':
+                        # upload images
+                        f = open(field[1], 'rb')
+                        fname = idxRecord.prefix + os.path.basename(field[1])
+                        self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=IMAGES_DIR))
+                        self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
+                        f.close()
+                        # Modify field - set filename.ext instead of full path after uploading.
+                        idxRecord.update({field[0]: fname})
+        
+                    elif field[0] == 'movie_filename' and field[1] != '':
+                        # upload movies
+                        f = open(field[1], 'rb')
+                        fname = idxRecord.prefix + os.path.basename(field[1])
+                        self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=MOVIES_DIR))
+                        self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
+                        f.close()
+                        # Modify field - set filename.ext instead of full path after uploading.
+                        idxRecord.update({field[0]: fname})
+                
+                    # upload docs
+                    elif field[0] == 'document_filename' and field[1] != '':
+                        # upload movies
+                        f = open(field[1], 'rb')
+                        fname = idxRecord.prefix + os.path.basename(field[1])
+                        self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DOC_DIR))
+                        self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
+                        f.close()
+                        # Modify field - set filename.ext instead of full path after uploading.
+                        idxRecord.update({field[0]: fname})
+                    
+                # append to idx file
+                for field in idxRecord.fields:
+                    idx_f.write("{field1}#".format(field1=field[1])
+                idx_f.write("\n\r")
+                idx_f.flush()
+        
+            # upload idx file
+            idx_f.seek(0)
+            self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DOC_DIR))
+            self.session.storlines('STOR unload.txt', idx_f) 
+            # remove tmp file 
+            idx_f.close()
+            os.unlink(idx_filename)
+            return True
+        return False
         
     def __del__(self):
         ''' 
