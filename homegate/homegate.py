@@ -83,7 +83,7 @@ class Homegate(object):
                         idx_f.write(field[1] + "#")                
                     except Exception, ex:
                         ff = open("/tmp/homegate-api-error.log", "a")
-                        ff.write(str(ex) + " in field " +field[0])
+                        ff.write(str(ex) + " in field " +field[0] + "\n")
                         ff.flush()
                         
                 idx_f.write("\n\r")
