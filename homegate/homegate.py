@@ -79,13 +79,7 @@ class Homegate(object):
                     
                 # append to idx file
                 for field in idxRecord.fields:
-                    try:
-                        print field[0], field[1]
-                        idx_f.write(field[1])                
-                    except Exception, ex:
-                        ff = open("/tmp/homegate-api-error.log", "a")
-                        ff.write(str(ex) + " in field " +field[0] + "\n")
-                        ff.flush()
+                    idx_f.write(field[1])                
                     idx_f.write("#")         
                 idx_f.write("\n\r")
                 idx_f.flush()
@@ -93,7 +87,7 @@ class Homegate(object):
             # upload idx file
             idx_f.seek(0)
             self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DATA_DIR))
-            self.session.storlines('STOR unload.txt', idx_f) 
+            self.session.storbinary('STOR unload.txt', idx_f) 
             # remove tmp file 
             idx_f.close()
             os.unlink(idx_filename)
