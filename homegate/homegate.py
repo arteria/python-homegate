@@ -86,8 +86,9 @@ class Homegate(object):
         
             # upload idx file
             idx_f.seek(0)
+            f = open("/tmp/unload.txt", 'rb')
             self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DATA_DIR))
-            self.session.storbinary('STOR unload.txt', idx_f) 
+            self.session.storbinary('STOR unload.txt', f) 
             # remove tmp file 
             idx_f.close()
             os.unlink(idx_filename)
