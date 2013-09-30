@@ -34,7 +34,7 @@ class Homegate(object):
         Transfer (push, upload) this record(s) and it's file to Homegate.
         '''
         idx_f = tempfile.NamedTemporaryFile(delete=False)
-        idx_filename = idx_f.name
+        idx_filename = "/tmp/unload.txt" #idx_f.name
         idx_f.close()
         with codecs.open(idx_filename, 'w+b', encoding="ISO-8859-1") as idx_f:
             last_modified = datetime.datetime.now().strftime("%d.%m.%Y")
