@@ -80,12 +80,13 @@ class Homegate(object):
                 # append to idx file
                 for field in idxRecord.fields:
                     try:
-                        idx_f.write(field[1] + "#")                
+                        print field[0], field[1]
+                        idx_f.write(field[1])                
                     except Exception, ex:
                         ff = open("/tmp/homegate-api-error.log", "a")
                         ff.write(str(ex) + " in field " +field[0] + "\n")
                         ff.flush()
-                        
+                    idx_f.write("#")         
                 idx_f.write("\n\r")
                 idx_f.flush()
         
