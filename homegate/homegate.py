@@ -32,6 +32,7 @@ class Homegate(object):
     def push(self, idxRecords):
         ''' 
         Transfer (push, upload) this record(s) and it's file to Homegate.
+        autoUpdate: set 
         '''
         idx_f = tempfile.NamedTemporaryFile(delete=False)
         idx_filename = idx_f.name
@@ -43,7 +44,9 @@ class Homegate(object):
                 idxRecords = [idxRecords, ]
         
             for idxRecord in idxRecords:
-                idxRecord.update({'agency_id': self.agancyID, 'last_modified': last_modified})
+                if self.agancyID != '' and self.agancyID is not None:
+                    idxRecord.update({'agency_id': self.agancyID}) 
+                idxRecord.update({'last_modified': last_modified})
         
                 for field in idxRecord.fields:
                     if field[0] in self._images and field[1] != '':
