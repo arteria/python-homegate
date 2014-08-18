@@ -295,7 +295,7 @@ class IdxRecord(object):
                 ['sparefield_4', ''],
         ]
     
-    def convert(self, value, options={}):
+    def convert(self, value='', options={}):
         ''' Convert and validate values. '''
         if options.get('type', ) == 'int':
             getcontext().prec, scale = options.get('length', (28, 0)) 
