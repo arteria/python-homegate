@@ -38,6 +38,7 @@ class Homegate(object):
         idx_f = tempfile.NamedTemporaryFile(delete=False)
         idx_filename = idx_f.name
         idx_f.close()
+        print "writing to", idx_filename
         with codecs.open(idx_filename, 'w+b', encoding="ISO-8859-1") as idx_f:
             last_modified = datetime.datetime.now().strftime("%d.%m.%Y")
         
