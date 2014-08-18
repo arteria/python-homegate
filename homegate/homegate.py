@@ -53,14 +53,17 @@ class Homegate(object):
                 for field in idxRecord.fields:
                     if field[0] in self._images and field[1] != '':
                         # upload images
-                        f = open(field[1], 'rb')
-                        fname = idxRecord.prefix + os.path.basename(field[1])
-                        self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=IMAGES_DIR))
-                        self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
-                        f.close()
-                        # Modify field - set filename.ext instead of full path after uploading.
-                        idxRecord.update({field[0]: fname})
-        
+                        try:
+                            f = open(field[1], 'rb')
+                            fname = idxRecord.prefix + os.path.basename(field[1])
+                            self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=IMAGES_DIR))
+                            self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
+                            f.close()
+                            # Modify field - set filename.ext instead of full path after uploading.
+                            idxRecord.update({field[0]: fname})
+                        except IOError:
+                            print "ERROR: Image", field[1], "not found!"
+                            
                     elif field[0] == 'movie_filename' and field[1] != '':
                         # upload movies
                         f = open(field[1], 'rb')
