@@ -295,13 +295,14 @@ class IdxRecord(object):
                 ['sparefield_4', ''],
         ]
     
-    def convert(self, value='', options={}):
+    def convert(self, value=None, options={}):
         ''' Convert and validate values. '''
-        if options.get('type', ) == 'int':
-            getcontext().prec, scale = options.get('length', (28, 0)) 
-            value = str(round(Decimal(value) * Decimal(1), scale))
-        if options.get('type', ) == 'str':  
-            value = value[:options.get('length', -1)]
+        if value is not None and value != '':
+            if options.get('type', ) == 'int':
+                getcontext().prec, scale = options.get('length', (28, 0)) 
+                value = str(round(Decimal(value) * Decimal(1), scale))
+            if options.get('type', ) == 'str':  
+                value = value[:options.get('length', -1)]
         return value 
     
     
