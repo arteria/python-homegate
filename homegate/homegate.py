@@ -3,6 +3,7 @@ import tempfile
 import datetime
 import os
 import codecs
+from decimal import *
 from __init__ import __version__
 
 
@@ -84,7 +85,7 @@ class Homegate(object):
                 for field in idxRecord.fields:
                     idx_f.write(field[1])                
                     idx_f.write("#")         
-                idx_f.write("\n\r")
+                idx_f.write('\x0d\x0a') # end of line
                 idx_f.flush()
         
             # upload idx file
@@ -95,7 +96,8 @@ class Homegate(object):
             os.unlink(idx_filename)
             return True
         return False
-        
+    
+    
     def __del__(self):
         ''' 
         Clean up and close. 
@@ -131,8 +133,8 @@ class IdxRecord(object):
                 ['price_unit', ''],
                 ['currency', ''],
                 ['gross_premium', ''],
-                ['floor', ''],
-                ['number_of_rooms', ''],
+                ['floor', '', {'type': 'int', 'length':(6, 0)}],
+                ['number_of_rooms', '', {'type': 'int', 'length':(5, 1)}],
                 ['number_of_apartments', ''],
                 ['surface_living', ''],
                 ['surface_property', ''],
@@ -292,6 +294,16 @@ class IdxRecord(object):
                 ['sparefield_4', ''],
         ]
     
+    def convert(self, value, options={}):
+        ''' Convert and validate values. '''
+        if options.get('type', ) == 'int':
+            getcontext().prec, scale = options.get('length', (28, 0)) 
+            value = round(Decimal(value) * Decimal(1), scale)
+        if options.get('type', ) == 'str':  
+            value = value[:options.get('length', -1)]
+        return value 
+    
+    
     def update(self, obj):
         '''
         The argument 'obj' should be dictionary containing the new values to overwrites 'self._fields' partially.
@@ -309,7 +321,10 @@ class IdxRecord(object):
             found  = False
             for field in self.fields: 
                 if o == field[0]:
-                    field[1] = obj[o] 
+                    if len(field) > 2:
+                        field[1] = self.convert(obj[o], field[2])
+                    else:
+                        field[1] = obj[o] #self.convert(obj[o], field[2])
                     updates += 1
                     found = True
                     break

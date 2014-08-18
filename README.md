@@ -70,13 +70,19 @@ Contribution
 TODO
 ====
 
-* Type and length validation for each field
+* WIP: Type and length validation for each field
 * 
 
 Changelog
 =========
 
+0.0.2
+-----
+
+* Added convert to X functions for automatic type and length conversion of fields in an IDX record.
+* 
+
 0.0.1
 -----
 
-arteria GmbH open sourced the initial working version of python-homegate allowing to push real estate objects and property to Homegate using the IDX3.01 API.
+arteria GmbH open sourced the initial working version of [python-homegate](https://github.com/arteria/python-homegate) allowing to push real estate objects and property to Homegate using the IDX3.01 API.
