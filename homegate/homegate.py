@@ -297,12 +297,16 @@ class IdxRecord(object):
     
     def convert(self, value=None, options={}):
         ''' Convert and validate values. '''
+        converted = False
         if value is not None and value != '':
             if options.get('type', ) == 'int':
                 getcontext().prec, scale = options.get('length', (28, 0)) 
                 value = str(round(Decimal(value) * Decimal(1), scale))
+                converted = True
             if options.get('type', ) == 'str':  
                 value = value[:options.get('length', -1)]
+                converted = True
+        print "converted", converted 
         return value 
     
     
