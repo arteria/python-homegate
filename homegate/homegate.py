@@ -299,7 +299,7 @@ class IdxRecord(object):
         ''' Convert and validate values. '''
         if options.get('type', ) == 'int':
             getcontext().prec, scale = options.get('length', (28, 0)) 
-            value = round(Decimal(value) * Decimal(1), scale)
+            value = str(round(Decimal(value) * Decimal(1), scale))
         if options.get('type', ) == 'str':  
             value = value[:options.get('length', -1)]
         return value 
