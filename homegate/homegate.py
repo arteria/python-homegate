@@ -56,7 +56,8 @@ class Homegate(object):
                         try:
                             f = open(field[1], 'rb')
                             fname = idxRecord.prefix + os.path.basename(field[1])
-                            self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=IMAGES_DIR))
+                            #self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=IMAGES_DIR))
+                            self.session.cwd("/{directory}/".format(directory=IMAGES_DIR))
                             self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
                             f.close()
                             # Modify field - set filename.ext instead of full path after uploading.
@@ -68,7 +69,8 @@ class Homegate(object):
                         # upload movies
                         f = open(field[1], 'rb')
                         fname = idxRecord.prefix + os.path.basename(field[1])
-                        self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=MOVIES_DIR))
+                        #self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=MOVIES_DIR))
+                        self.session.cwd("/{directory}/".format(directory=MOVIES_DIR))
                         self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
                         f.close()
                         # Modify field - set filename.ext instead of full path after uploading.
@@ -79,7 +81,8 @@ class Homegate(object):
                         # upload movies
                         f = open(field[1], 'rb')
                         fname = idxRecord.prefix + os.path.basename(field[1])
-                        self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DOC_DIR))
+                        #self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DOC_DIR))
+                        self.session.cwd("/{directory}/".format(directory=DOC_DIR))
                         self.session.storbinary('STOR {fname}'.format(fname=fname), f) 
                         f.close()
                         # Modify field - set filename.ext instead of full path after uploading.
@@ -95,7 +98,8 @@ class Homegate(object):
             # upload idx file
             idx_f.close()
             idx_f = open(idx_filename, 'rb')
-            self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DATA_DIR))
+            #self.session.cwd("/{agancyID}{directory}/".format(agancyID=self.agancyID, directory=DATA_DIR))
+            self.session.cwd("/{directory}/".format(directory=DATA_DIR))
             self.session.storbinary('STOR unload.txt', idx_f) 
             os.unlink(idx_filename)
             return True
