@@ -12,7 +12,7 @@ Installation
 
 If you want the latest stable version of python-homegate from PyPi, install using
 
-	#TODO
+	pip install homegate
 
 Or, if you prefer to install the latest and greates commit from GitHub, install using
 
