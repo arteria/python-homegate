@@ -24,8 +24,6 @@ You should know what you do by choosing the second option. ;-)
 Usage
 =====
 
-NOT WORKING CURRENTLY - WORK IN PROGRESS!
-
 Connect to Homegate
 
 	>>> from homegate.homegate import Homegate, IdxRecord
