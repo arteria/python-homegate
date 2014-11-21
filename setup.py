@@ -8,6 +8,7 @@ setup(
     packages=['homegate', ],
     license='BSD',
     long_description=open('README.md').read(),
+    description='Python library used to interact with Homegate',
     author='arteria GmbH',
     author_email='admin@arteria.ch',
 )
